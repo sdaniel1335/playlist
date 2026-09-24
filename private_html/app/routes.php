@@ -16,6 +16,16 @@ return array(
       'controller' => 'auth',
       'class' => 'Auth',
       'action' => 'password'
+    ),
+    '/hidden-password' => array(
+      'controller' => 'settings',
+      'class' => 'Settings',
+      'action' => 'hiddenPassword'
+    ),
+    '/video/edit' => array(
+      'controller' => 'playlist',
+      'class' => 'Playlist',
+      'action' => 'edit'
     )
   ),
   'POST' => array(
@@ -33,6 +43,31 @@ return array(
       'controller' => 'auth',
       'class' => 'Auth',
       'action' => 'passwordPost'
+    ),
+    '/hidden-password' => array(
+      'controller' => 'settings',
+      'class' => 'Settings',
+      'action' => 'hiddenPasswordPost'
+    ),
+    '/hidden-unlock' => array(
+      'controller' => 'pages',
+      'class' => 'Pages',
+      'action' => 'hiddenUnlockPost'
+    ),
+    '/hidden-lock' => array(
+      'controller' => 'pages',
+      'class' => 'Pages',
+      'action' => 'hiddenLockPost'
+    ),
+    '/video/edit' => array(
+      'controller' => 'playlist',
+      'class' => 'Playlist',
+      'action' => 'editPost'
+    ),
+    '/video/delete' => array(
+      'controller' => 'playlist',
+      'class' => 'Playlist',
+      'action' => 'deletePost'
     )
   )
 );

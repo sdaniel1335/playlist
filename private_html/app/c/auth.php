@@ -78,7 +78,8 @@ class Auth extends App
     unset(
       $_SESSION['auth_user_id'],
       $_SESSION['auth_username'],
-      $_SESSION['_auth_csrf']
+      $_SESSION['_auth_csrf'],
+      $_SESSION['_playlist_hidden_unlocked']
     );
 
     session_regenerate_id(true);
@@ -169,3 +170,4 @@ class Auth extends App
     $this->redirect('/password');
   }
 }
+
