@@ -63,9 +63,20 @@
       <h1 class="h4 mb-0">
         <?php echo $hidden_mode ? 'Hidden videos' : 'Videos'; ?>
       </h1>
-      <span class="badge text-bg-secondary">
-        <?php echo count($videos); ?>
-      </span>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-secondary">
+          <?php echo count($videos); ?>
+        </span>
+        <a
+          href="<?php echo url('/video/add'); ?>"
+          class="btn btn-primary btn-sm"
+          title="Add video"
+          aria-label="Add video"
+        >
+          <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          <span class="d-none d-sm-inline ms-1">Add video</span>
+        </a>
+      </div>
     </div>
 
     <?php if (! empty($videos)) { ?>
@@ -122,3 +133,4 @@
     <?php } ?>
   </section>
 </div>
+

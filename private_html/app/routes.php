@@ -22,6 +22,11 @@ return array(
       'class' => 'Settings',
       'action' => 'hiddenPassword'
     ),
+    '/video/add' => array(
+      'controller' => 'playlist',
+      'class' => 'Playlist',
+      'action' => 'add'
+    ),
     '/video/edit' => array(
       'controller' => 'playlist',
       'class' => 'Playlist',
@@ -59,6 +64,11 @@ return array(
       'class' => 'Pages',
       'action' => 'hiddenLockPost'
     ),
+    '/video/add' => array(
+      'controller' => 'playlist',
+      'class' => 'Playlist',
+      'action' => 'addPost'
+    ),
     '/video/edit' => array(
       'controller' => 'playlist',
       'class' => 'Playlist',
@@ -71,3 +81,4 @@ return array(
     )
   )
 );
+

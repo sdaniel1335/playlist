@@ -2,6 +2,74 @@
 
 class Playlist extends App
 {
+  public function add()
+  {
+    $hidden_mode = isset($_SESSION['_playlist_hidden_unlocked'])
+      && $_SESSION['_playlist_hidden_unlocked'] === true;
+
+    $this->set(
+      array(
+        'title' => 'Add video',
+        'hidden_default' => $hidden_mode
+      )
+    );
+
+    $this->render('playlist/add');
+  }
+
+  public function addPost()
+  {
+    $this->requireLogin();
+    $this->requireCsrf();
+
+    $url = isset($_POST['url']) ? trim($_POST['url']) : '';
+    $uri = isset($_POST['uri']) ? trim($_POST['uri']) : '';
+    $title = isset($_POST['title']) ? trim($_POST['title']) : '';
+    $hidden = isset($_POST['hidden']) ? 1 : 0;
+
+    if ($url === '' || $title === '') {
+      $this->flash('error', 'URL and title are required.');
+      $this->redirect('/video/add');
+    }
+
+    if (strlen($url) > 2048 || strlen($uri) > 255 || strlen($title) > 255) {
+      $this->flash('error', 'One or more fields are too long.');
+      $this->redirect('/video/add');
+    }
+
+    $user_id = auth_user_id();
+
+    $stmt = $this->db->prepare(
+      'INSERT INTO '
+      . $this->table('playlist')
+      . ' (user_id, url, uri, title, hidden) VALUES (?, ?, ?, ?, ?)'
+    );
+
+    $stmt->bind_param(
+      'isssi',
+      $user_id,
+      $url,
+      $uri,
+      $title,
+      $hidden
+    );
+
+    $stmt->execute();
+    $id = (int) $stmt->insert_id;
+    $stmt->close();
+
+    $this->flash('success', 'Video added.');
+
+    $hidden_mode = isset($_SESSION['_playlist_hidden_unlocked'])
+      && $_SESSION['_playlist_hidden_unlocked'] === true;
+
+    if (($hidden_mode && $hidden === 1) || (! $hidden_mode && $hidden === 0)) {
+      $this->redirect('/?video=' . $id);
+    }
+
+    $this->redirect('/');
+  }
+
   public function edit()
   {
     $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -141,3 +209,4 @@ class Playlist extends App
     $this->redirect('/');
   }
 }
+
