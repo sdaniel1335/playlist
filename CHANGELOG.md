@@ -2,10 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2026-09-24
+## [0.1.0] - 2026-09-26
 
 ### Added
 
+* Initial application structure.
+* VC Framework integration.
+* User authentication.
+* Login and logout support.
+* User password change support.
+* CSRF protection for form actions.
+* Flash message support.
+* MySQLi database support.
+* Database configuration.
+* Optional database table prefix support.
+* Optional absolute application URL support.
+* Apache URL rewriting.
+* Subdirectory installation support.
 * Database-backed video playlist.
 * Per-user playlists.
 * Full-width iframe video player.
@@ -26,22 +39,4 @@ All notable changes to this project will be documented in this file.
 * Mobile-friendly playlist interface.
 * Bootstrap Icons support.
 * JavaScript playlist interactions through `app.js`.
-
-## [0.1.0] - 2026-09-24
-
-### Added
-
-* Initial application structure.
-* User authentication.
-* Login and logout support.
-* User password change support.
-* CSRF protection for form actions.
-* Flash message support.
-* MySQLi database support.
-* Database configuration.
-* Optional database table prefix support.
-* Optional absolute application URL support.
-* Apache URL rewriting.
-* Subdirectory installation support.
-* VC Framework integration.
 * PHP 5.3+ compatibility.
