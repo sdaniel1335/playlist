@@ -42,6 +42,9 @@
 
       <?php if ($current_video !== null) { ?>
         <div class="playlist-player-frame bg-black overflow-hidden">
+          <?php if ($current_video['filename'] !== null) { ?>
+          <video controls playsinline preload="metadata" src="<?php echo url('/video/media') . '?id=' . (int) $current_video['id']; ?>" aria-label="<?php echo htmlspecialchars($current_video['title'], ENT_QUOTES, 'UTF-8'); ?>"></video>
+          <?php } else { ?>
           <iframe
             src="<?php echo htmlspecialchars($current_video['url'] . $current_video['uri'], ENT_QUOTES, 'UTF-8'); ?>"
             title="<?php echo htmlspecialchars($current_video['title'], ENT_QUOTES, 'UTF-8'); ?>"
@@ -49,6 +52,7 @@
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
           ></iframe>
+          <?php } ?>
         </div>
       <?php } else { ?>
         <div class="playlist-empty-player border rounded p-4 text-center text-body-secondary">
@@ -67,6 +71,9 @@
         <span class="badge text-bg-secondary">
           <?php echo count($videos); ?>
         </span>
+        <a href="<?php echo url('/video/add') . '?upload=1'; ?>" class="btn btn-primary btn-sm" title="Upload video" aria-label="Upload video">
+          <i class="bi bi-upload" aria-hidden="true"></i><span class="d-none d-sm-inline ms-1">Upload video</span>
+        </a>
         <a
           href="<?php echo url('/video/add'); ?>"
           class="btn btn-primary btn-sm"
@@ -100,6 +107,18 @@
               </a>
 
               <div class="d-flex gap-2 flex-shrink-0">
+                <?php if ($video['filename'] !== null) { ?>
+                  <span class="align-self-center" title="Uploaded video" aria-label="Uploaded video"><i class="bi bi-file-earmark-play" aria-hidden="true"></i></span>
+                <?php } ?>
+                <?php if ($video['has_cover']) { ?>
+                  <span class="playlist-cover-icon align-self-center" tabindex="0" aria-label="Cover preview">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                    <img class="playlist-cover-preview" loading="lazy" src="<?php echo url('/video/media') . '?id=' . (int) $video['id'] . '&amp;image=cover'; ?>" alt="Cover preview">
+                  </span>
+                <?php } ?>
+                <?php if ($video['image_count'] > 0) { ?>
+                  <span class="align-self-center" tabindex="0" title="<?php echo $video['image_count']; ?> images" aria-label="<?php echo $video['image_count']; ?> images"><i class="bi bi-images" aria-hidden="true"></i></span>
+                <?php } ?>
                 <a
                   href="<?php echo url('/video/edit') . '?id=' . (int) $video['id']; ?>"
                   class="btn btn-sm <?php echo $active ? 'btn-light' : 'btn-outline-secondary'; ?>"

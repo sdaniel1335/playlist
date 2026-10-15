@@ -22,6 +22,7 @@ return array(
       'class' => 'Settings',
       'action' => 'hiddenPassword'
     ),
+    '/video/media' => array('controller' => 'playlist', 'class' => 'Playlist', 'action' => 'media'),
     '/video/add' => array(
       'controller' => 'playlist',
       'class' => 'Playlist',
@@ -34,6 +35,7 @@ return array(
     )
   ),
   'POST' => array(
+    '/video/upload-chunk' => array('controller' => 'playlist', 'class' => 'Playlist', 'action' => 'uploadChunk'),
     '/login' => array(
       'controller' => 'auth',
       'class' => 'Auth',

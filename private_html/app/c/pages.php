@@ -32,9 +32,14 @@ class Pages extends App
 
     $hidden = $hidden_mode ? 1 : 0;
     $videos = array();
+    $image_count_sql = array();
+    for ($i = 1; $i <= 10; $i++) {
+      $image_count_sql[] = '(image' . $i . ' IS NOT NULL)';
+    }
 
     $stmt = $this->db->prepare(
-      'SELECT id, url, uri, title, hidden, created_at FROM '
+      'SELECT id, url, uri, title, hidden, created_at, filename, (cover IS NOT NULL), '
+      . implode(' + ', $image_count_sql) . ' FROM '
       . $this->table('playlist')
       . ' WHERE user_id = ? AND hidden = ?'
       . ' ORDER BY created_at DESC, id DESC'
@@ -48,7 +53,10 @@ class Pages extends App
       $uri,
       $video_title,
       $video_hidden,
-      $created_at
+      $created_at,
+      $filename,
+      $has_cover,
+      $image_count
     );
 
     while ($stmt->fetch()) {
@@ -58,7 +66,10 @@ class Pages extends App
         'uri' => $uri,
         'title' => $video_title,
         'hidden' => (int) $video_hidden,
-        'created_at' => $created_at
+        'created_at' => $created_at,
+        'filename' => $filename,
+        'has_cover' => (bool) $has_cover,
+        'image_count' => (int) $image_count
       );
     }
 
