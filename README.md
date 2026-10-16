@@ -1,111 +1,61 @@
 # Playlist
 
-Lightweight PHP playlist player for storing and playing iframe-embeddable videos from a database.
+Lightweight PHP video playlist manager built on [VC Framework](https://github.com/dsoos1290/vcframework) for PHP 5.3 and newer.
 
-Playlist provides a simple mobile-friendly interface with a sticky iframe player and a database-backed video list. Videos can be added, edited and deleted, and can be separated into public and password-protected hidden playlists.
-
-The iframe source is built from a base URL and a video-specific URI, making it suitable for YouTube and other iframe-compatible video sources. Playlist is built on [VC Framework](https://github.com/dsoos1290/vcframework) and is compatible with PHP 5.3 and newer.
+Playlist manages per-user collections of embedded and uploaded videos, with a sticky player, optional password-protected hidden playlists, and image attachments.
 
 ## Features
 
-* Database-backed video playlist
-* Full-width iframe video player
-* Sticky player while scrolling
-* Player height limited to 50% of the viewport
-* Iframe source built from URL and URI
-* Video selection through URL video IDs
-* Public and hidden video playlists
-* Password-protected hidden playlist
-* Lock and unlock controls for hidden videos
-* Separate hidden password configuration
-* Add new videos
-* Edit existing videos
-* Delete videos
-* Hidden/public setting per video
-* Confirmation before destructive or modifying actions
-* User authentication
-* User password change
-* Per-user playlists
-* CSRF protection for form actions
-* Flash messages
-* Mobile-friendly Bootstrap interface
-* Bootstrap Icons
-* JavaScript interactions through `app.js`
-* MySQLi database connection
-* Optional database table prefix
-* Optional absolute application URL support
-* Apache URL rewriting
-* Subdirectory installation support
-* Built on VC Framework
-* PHP 5.3+ compatibility
-
-## Usage
-
-1. Download the latest version: https://github.com/sdaniel1335/playlist/releases/latest
-2. Rename `private_html/app/config/db-sample.php` to `db.php`.
-3. Open `db.php` and configure your database connection.
-4. Import `install.sql` into the configured database.
-5. Open the application in your browser.
-6. Log in with the default credentials:
-
-    * Username: `admin`
-    * Password: `admin`
-7. Change the default password after the first login.
-8. Optionally configure a separate hidden playlist password from the **Hidden password** page.
-9. Add videos by providing a title, iframe URL and URI.
-
-The final iframe source is generated as:
-
-`URL + URI`
-
-For example:
-
-`https://www.youtube.com/embed/` + `VIDEO_ID`
+* Per-user video playlists with add, edit and delete actions.
+* Embedded videos using a base iframe URL and video-specific URI.
+* MP4, WebM and Ogg video uploads (up to 700 MiB), sent in 8 MiB chunks and stored across database BLOB columns.
+* Authenticated byte-range playback of uploaded videos; no server-side transcoding.
+* Full-width, sticky video player with a maximum height of 50% of the viewport.
+* Public and password-protected hidden videos, with lock/unlock controls and a separate hidden-playlist password.
+* One cover image and up to ten additional images per video (10 MiB per image), plus private notes in edit forms.
+* User login, password changes, CSRF protection and flash messages.
+* Responsive interface, Bootstrap Icons and JavaScript interactions.
+* MySQLi, optional database table prefixes, Apache URL rewriting and subdirectory support.
+* No Composer dependency; PHP 5.3+ compatible.
 
 ## Requirements
 
-* PHP 5.3 or newer
-* MySQL or MariaDB
-* MySQLi PHP extension
-* Apache with `mod_rewrite`
-* JavaScript-enabled browser
+* PHP 5.3+ with MySQLi and fileinfo extensions.
+* MySQL or MariaDB with sufficient storage and packet limits for uploaded media.
+* Apache with `mod_rewrite`.
+* JavaScript-enabled browser and browser-supported video codecs.
+* Writable PHP temporary directory with enough space for the entire staged video.
+
+## Installation
+
+1. Download the [latest release](https://github.com/sdaniel1335/playlist/releases/latest) or clone the repository.
+2. Rename `private_html/app/config/db-sample.php` to `private_html/app/config/db.php` and configure the database.
+3. Import `install.sql` into the configured database (new installations only).
+4. Open the application in your browser and sign in with `admin` / `admin`.
+5. **Immediately change the default password** and configure a hidden-playlist password if needed.
+6. Add an embedded video by specifying its title, base URL and URI, or use the upload form for a local video file.
+
+**Security:** Change the default credentials before exposing the application to the internet. Keep `private_html` inaccessible to direct HTTP requests and set `APP_ENV` appropriately for production.
 
 ## Configuration
 
-Application settings are located in:
+Application configuration: `private_html/app/config/app.php` (`APP_URL` is optional).
 
-`private_html/app/config/app.php`
+Database configuration: `private_html/app/config/db.php` (`DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME`, `DB_CHAR`, `DB_TIME`, `DB_PREFIX`).
 
-Database settings are located in:
+Embedded video sources are formed by concatenating `URL + URI`, for example `https://www.youtube.com/embed/` and `VIDEO_ID`.
 
-`private_html/app/config/db.php`
+## Media storage and upload limits
 
-The following database settings are available:
+* Video files: MP4, WebM or Ogg, maximum **700 MiB** per file.
+* Uploads: sequential **8 MiB** HTTP chunks; a complete file is staged in PHP's temporary directory before the database transaction.
+* Database storage: up to six video BLOB columns, at most **128 MiB** per populated column.
+* Images: one cover and ten additional JPEG, PNG, GIF or WebP images, each up to **10 MiB**.
+* Uploaded video content cannot be replaced through the edit form; metadata and images can be edited.
+* Upload sessions expire after 24 hours of inactivity; no automatic resume across page reloads.
+* Playback supports byte-range requests, but does not transcode unsupported codecs.
 
-* `DB_HOST`
-* `DB_USER`
-* `DB_PASS`
-* `DB_NAME`
-* `DB_CHAR`
-* `DB_TIME`
-* `DB_PREFIX`
-
-An optional absolute application URL can be configured with `APP_URL`.
-## Uploaded videos, images and notes (0.1.0)
-
-New installations: import `install.sql`. Existing installations with the original media columns: run `alter-video-parts.sql` once. If upgrading directly from the original iframe-only schema, run `alter-upload-media.sql` first, then `alter-video-parts.sql`. Adjust the table names for `DB_PREFIX`. Do not rerun migrations already applied.
-
-All media stays in the same `playlist` row. A video uses `video_blob` followed by `video_blob2` through `video_blob6`, with at most **128 MiB per populated column**. Existing single-column videos are preserved and can still be played. Additional columns stay NULL for shorter files. The total upload limit is **700 MiB** (734,003,200 bytes).
-
-Use **Upload video** for MP4, WebM or Ogg. JavaScript sends the file sequentially in **8 MiB HTTP requests**, displays progress, then submits the metadata and images separately. You do not need to split files manually. The full video is staged in the server's private temporary directory and written into the BLOB columns in one transaction; the temporary file is removed after success. Only completed saves appear in the playlist. Upload tokens are tied to the authenticated session/user and expire after 24 hours of inactivity. Starting a new upload in the same session removes the previous temporary file. Abandoned files from expired/lost sessions should be removed by the host's temporary-file cleanup (prefix `playlist-video-`). Failed uploads can be restarted by pressing Upload video again; automatic resume across page reloads is not provided.
-
-Playback uses authenticated byte-range requests across column boundaries without SQL CONCAT or loading the entire video into PHP memory. Browser-supported codecs are required; videos are not transcoded. Uploaded entries have a small file/play icon. Their filename, title, hidden setting, note and images can be edited, but the video bytes cannot be replaced.
-
-Both embedded and uploaded videos support one cover and ten image slots, each up to **10 MiB**, stored in `MEDIUMBLOB` columns. JPEG, PNG, GIF and WebP are supported. Edit forms allow replacement/removal. The list shows a cover hover/focus preview and an image-count tooltip. Notes appear only in add/edit forms. Hidden media requires the owning user's hidden playlist to be unlocked.
-
-### Hosting settings
-
-The 128 MiB PHP POST limit and 256 MiB database packet limit are sufficient for the new transfer/storage sizes. The final form can include eleven 10 MiB images, so keep `post_max_size` at 128M. The supplied `.user.ini` files use:
+Suggested PHP settings (the hosting environment may require additional adjustments):
 
 ```ini
 upload_max_filesize = 128M
@@ -116,4 +66,8 @@ max_execution_time = 3600
 memory_limit = 256M
 ```
 
-Enable PHP **fileinfo** and provide at least the video's size in free PHP temporary disk space, plus room for image uploads. No 1 GiB `max_allowed_packet` increase is needed: each BLOB parameter is at most 128 MiB, below the known 256 MiB limit. Web-server/proxy request limits must allow the 8 MiB chunks and final image form. PHP-FPM/web-server timeouts must allow the final database save, which can take longer than a chunk request. Database capacity, transaction logs, replication and backups must accommodate the full row. Test an actual 600–700 MB upload and seeking across the 128 MiB boundaries on the hosting server.
+The web server must permit the chunk and image requests; the database and PHP timeouts must permit the final save. Plan for sufficient temporary disk space, database storage and backups. Test large uploads and seeking on the target host.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the release history.
