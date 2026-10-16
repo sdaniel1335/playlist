@@ -6,37 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-* Initial application structure.
-* VC Framework integration.
-* User authentication.
-* Login and logout support.
-* User password change support.
-* CSRF protection for form actions.
-* Flash message support.
-* MySQLi database support.
-* Database configuration.
-* Optional database table prefix support.
-* Optional absolute application URL support.
-* Apache URL rewriting.
-* Subdirectory installation support.
-* Database-backed video playlist.
-* Per-user playlists.
-* Full-width iframe video player.
-* Sticky video player while scrolling.
-* Player height limited to 50% of the viewport.
-* Iframe source generation from video URL and URI.
-* Video selection through URL video IDs.
-* Public video playlist.
-* Password-protected hidden video playlist.
-* Lock and unlock controls for hidden videos.
-* Separate hidden playlist password.
-* Hidden password setup and change support.
-* Add video functionality.
-* Edit video functionality.
-* Delete video functionality.
-* Public/hidden setting for individual videos.
-* Confirmation dialogs for modifying and destructive actions.
-* Mobile-friendly playlist interface.
-* Bootstrap Icons support.
-* JavaScript playlist interactions through `app.js`.
-* PHP 5.3+ compatibility.
+- Initial Playlist application built on VC Framework with PHP 5.3+ compatibility.
+- MySQLi-backed per-user video playlists with add, edit and delete operations.
+- Embedded video playback using configurable base URLs and URIs.
+- MP4, WebM and Ogg uploads up to 700 MiB using sequential 8 MiB chunks and private temporary staging.
+- Storage of uploaded video data across up to six BLOB columns and authenticated byte-range streaming.
+- Cover image, up to ten additional images, and per-video notes.
+- Public and hidden video entries, hidden-playlist password setup, and lock/unlock controls.
+- Sticky, responsive iframe player and playlist interactions.
+- User authentication, password changes, CSRF protection and flash messages.
+- Optional database table prefix, absolute application URL and subdirectory support.
+- Apache URL rewriting, Bootstrap Icons and JavaScript interface behaviors.
