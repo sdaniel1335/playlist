@@ -1,1 +1,4 @@
-<?php require __DIR__ . "/form.php"; ?>
+<?php element('playlist_form', array(
+  'title' => $title,
+  'upload' => $upload
+)); ?>
