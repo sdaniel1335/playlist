@@ -72,3 +72,31 @@ body {
     min-height: 40px;
   }
 }
+
+body.js { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+body.js > header { background: #fff; border-bottom: 1px solid #e2e8f0; }
+body.js > main { flex: 1 0 auto; min-width: 0; }
+body.js > footer { margin-top: 2rem; padding: 1.25rem 1rem; border-top: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; text-align: center; font-size: .8125rem; line-height: 1.8; overflow-wrap: anywhere; }
+body.js > footer a { color: #475569; text-underline-offset: .2em; }
+body.js > footer a:hover { color: #1d4ed8; }
+.app-navigation { min-height: 76px; padding-top: 1rem; padding-bottom: 1rem; }
+.app-brand { display: inline-flex; align-items: center; gap: .65rem; color: #0f172a; font-size: 1.125rem; font-weight: 700; text-decoration: none; }
+.app-brand:hover { color: #1d4ed8; }
+.app-brand-icon { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: .65rem; background: #eff6ff; color: #2563eb; }
+.app-account { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .5rem 1rem; margin-left: auto; font-size: .875rem; }
+.app-user { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .65rem; border-radius: 2rem; background: #f1f5f9; color: #475569; overflow-wrap: anywhere; max-width: 100%; }
+.app-account > a { color: #475569; text-decoration: none; padding: .35rem 0; }
+.app-account > a:hover { color: #1d4ed8; text-decoration: underline; text-underline-offset: .2em; }
+.app-account .app-logout { font-size: inherit; border-radius: .5rem; padding: .35rem .75rem; }
+.app-login { max-width: 440px; padding-top: clamp(2rem, 7vh, 5rem); padding-bottom: 2rem; }
+.app-login-card { padding: 2rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: #fff; box-shadow: 0 12px 36px rgba(15, 23, 42, .06); }
+.app-login-icon { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; margin-bottom: 1.25rem; border-radius: .85rem; background: #eff6ff; color: #2563eb; font-size: 1.4rem; }
+.app-login-card h1 { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+.app-login-card .form-label { font-size: .875rem; font-weight: 500; color: #334155; }
+.app-login-card .form-control { min-height: 46px; border-color: #cbd5e1; border-radius: .5rem; }
+.app-login-card .btn { min-height: 46px; border-radius: .5rem; font-weight: 600; }
+@media (max-width: 575.98px) {
+  .app-navigation { gap: .75rem !important; }
+  .app-account { width: 100%; justify-content: flex-start; }
+  .app-login-card { padding: 1.5rem; }
+}

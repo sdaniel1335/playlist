@@ -1,4 +1,6 @@
-<div class="container py-4" style="max-width: 480px;">
+<div class="container app-login">
+  <div class="app-login-card">
+  <div class="app-login-icon" aria-hidden="true"><i class="bi bi-shield-lock"></i></div>
   <h1 class="mb-4"><?php echo htmlspecialchars($title); ?></h1>
 
   <form method="post" action="<?php echo url('/login'); ?>">
@@ -14,6 +16,7 @@
       <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required>
     </div>
 
-    <button type="submit" class="btn btn-primary"><?php echo htmlspecialchars(lang('LANG_LOGIN'), ENT_QUOTES, 'UTF-8'); ?></button>
+    <button type="submit" class="btn btn-primary w-100"><?php echo htmlspecialchars(lang('LANG_LOGIN'), ENT_QUOTES, 'UTF-8'); ?></button>
   </form>
+  </div>
 </div>
