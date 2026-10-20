@@ -6,23 +6,23 @@
 
     <?php if ($has_hidden_password) { ?>
       <div class="mb-3">
-        <label for="current_password" class="form-label">Current hidden password</label>
+        <label for="current_password" class="form-label"><?php echo htmlspecialchars(lang('LANG_CURRENT_HIDDEN_PASSWORD'), ENT_QUOTES, 'UTF-8'); ?></label>
         <input type="password" class="form-control" id="current_password" name="current_password" autocomplete="current-password" required autofocus>
       </div>
     <?php } ?>
 
     <div class="mb-3">
-      <label for="new_password" class="form-label"><?php echo $has_hidden_password ? 'New hidden password' : 'Hidden password'; ?></label>
+      <label for="new_password" class="form-label"><?php echo $has_hidden_password ? lang('LANG_NEW_HIDDEN_PASSWORD') : lang('LANG_HIDDEN_PASSWORD'); ?></label>
       <input type="password" class="form-control" id="new_password" name="new_password" minlength="4" autocomplete="new-password" required<?php echo ! $has_hidden_password ? ' autofocus' : ''; ?>>
     </div>
 
     <div class="mb-3">
-      <label for="new_password_confirm" class="form-label">Confirm new hidden password</label>
+      <label for="new_password_confirm" class="form-label"><?php echo htmlspecialchars(lang('LANG_CONFIRM_NEW_HIDDEN_PASSWORD'), ENT_QUOTES, 'UTF-8'); ?></label>
       <input type="password" class="form-control" id="new_password_confirm" name="new_password_confirm" minlength="4" autocomplete="new-password" required>
     </div>
 
     <button type="submit" class="btn btn-primary">
-      <?php echo $has_hidden_password ? 'Change hidden password' : 'Set hidden password'; ?>
+      <?php echo $has_hidden_password ? lang('LANG_CHANGE_HIDDEN_PASSWORD') : lang('LANG_SET_HIDDEN_PASSWORD'); ?>
     </button>
   </form>
 </div>

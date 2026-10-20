@@ -24,8 +24,8 @@ class Settings extends App
     $this->set(
       array(
         'title' => $has_hidden_password
-          ? 'Change hidden password'
-          : 'Set hidden password',
+          ? lang('LANG_CHANGE_HIDDEN_PASSWORD')
+          : lang('LANG_SET_HIDDEN_PASSWORD'),
         'has_hidden_password' => (bool) $has_hidden_password
       )
     );
@@ -51,17 +51,17 @@ class Settings extends App
       : '';
 
     if ($new_password === '' || $new_password_confirm === '') {
-      $this->flash('error', 'The new password fields are required.');
+      $this->flash('error', lang('LANG_THE_NEW_PASSWORD_FIELDS_ARE_REQUIRED'));
       $this->redirect('/hidden-password');
     }
 
     if (strlen($new_password) < 4) {
-      $this->flash('error', 'The new password must be at least 4 characters.');
+      $this->flash('error', lang('LANG_THE_NEW_PASSWORD_MUST_BE_AT_LEAST_4_CHARACTERS'));
       $this->redirect('/hidden-password');
     }
 
     if ($new_password !== $new_password_confirm) {
-      $this->flash('error', 'The new passwords do not match.');
+      $this->flash('error', lang('LANG_THE_NEW_PASSWORDS_DO_NOT_MATCH'));
       $this->redirect('/hidden-password');
     }
 
@@ -85,7 +85,7 @@ class Settings extends App
         $current_password === ''
         || !auth_password_check($current_password, $password_hash)
       ) {
-        $this->flash('error', 'Current hidden password is incorrect.');
+        $this->flash('error', lang('LANG_CURRENT_HIDDEN_PASSWORD_IS_INCORRECT'));
         $this->redirect('/hidden-password');
       }
     }
@@ -118,8 +118,8 @@ class Settings extends App
     $this->flash(
       'success',
       $has_hidden_password
-        ? 'Hidden password changed.'
-        : 'Hidden password set.'
+        ? lang('LANG_HIDDEN_PASSWORD_CHANGED')
+        : lang('LANG_HIDDEN_PASSWORD_SET')
     );
 
     $this->redirect('/hidden-password');

@@ -15,35 +15,35 @@ class Playlist extends App
     header('Cache-Control: no-store');
     try {
       if (!auth_csrf_valid(isset($_POST['_csrf']) ? $_POST['_csrf'] : '')) {
-        throw new Exception('Session token expired or request body was rejected. Reload the page.');
+        throw new Exception(lang('LANG_SESSION_TOKEN_EXPIRED_OR_REQUEST_BODY_WAS_REJECTED_RELOAD_THE_PAGE'));
       }
       $offset = isset($_POST['offset']) ? (int) $_POST['offset'] : -1;
       $total = isset($_POST['total']) ? (int) $_POST['total'] : 0;
       $token = isset($_POST['token']) ? $_POST['token'] : '';
-      if ($total <= 0 || $total > 734003200 || $offset < 0) { throw new Exception('Invalid video size.'); }
-      if (!isset($_FILES['chunk'])) { throw new Exception('Chunk missing: check PHP and web-server request limits.'); }
+      if ($total <= 0 || $total > 734003200 || $offset < 0) { throw new Exception(lang('LANG_INVALID_VIDEO_SIZE')); }
+      if (!isset($_FILES['chunk'])) { throw new Exception(lang('LANG_CHUNK_MISSING_CHECK_PHP_AND_WEB_SERVER_REQUEST_LIMITS')); }
       if ($_FILES['chunk']['error'] !== UPLOAD_ERR_OK) {
-        $errors = array(1 => 'PHP upload_max_filesize exceeded', 2 => 'form size limit exceeded',
-          3 => 'only part of the chunk arrived', 4 => 'chunk missing', 6 => 'temporary directory missing',
-          7 => 'cannot write temporary file (disk space or quota)', 8 => 'PHP extension stopped upload');
+        $errors = array(1 => lang('LANG_PHP_UPLOAD_MAX_FILESIZE_EXCEEDED'), 2 => lang('LANG_FORM_SIZE_LIMIT_EXCEEDED'),
+          3 => lang('LANG_ONLY_PART_OF_THE_CHUNK_ARRIVED'), 4 => lang('LANG_CHUNK_MISSING'), 6 => lang('LANG_TEMPORARY_DIRECTORY_MISSING'),
+          7 => lang('LANG_CANNOT_WRITE_TEMPORARY_FILE_DISK_SPACE_OR_QUOTA'), 8 => lang('LANG_PHP_EXTENSION_STOPPED_UPLOAD'));
         $code = (int) $_FILES['chunk']['error'];
-        throw new Exception('Chunk upload failed: ' . (isset($errors[$code]) ? $errors[$code] : 'PHP error ' . $code) . '.');
+        throw new Exception(lang('LANG_CHUNK_UPLOAD_FAILED') . (isset($errors[$code]) ? $errors[$code] : lang('LANG_PHP_ERROR') . $code) . '.');
       }
-      if (!is_uploaded_file($_FILES['chunk']['tmp_name'])) { throw new Exception('Chunk temporary file is unavailable.'); }
+      if (!is_uploaded_file($_FILES['chunk']['tmp_name'])) { throw new Exception(lang('LANG_CHUNK_TEMPORARY_FILE_IS_UNAVAILABLE')); }
       $chunk = $_FILES['chunk'];
       if ($chunk['size'] <= 0 || $chunk['size'] > 8388608 || $offset + $chunk['size'] > $total) {
-        throw new Exception('Invalid chunk size.');
+        throw new Exception(lang('LANG_INVALID_CHUNK_SIZE'));
       }
       if ($token === '') {
-        if ($offset !== 0) { throw new Exception('Start upload from the beginning.'); }
+        if ($offset !== 0) { throw new Exception(lang('LANG_START_UPLOAD_FROM_THE_BEGINNING')); }
         $name = isset($_POST['filename']) ? basename(str_replace('\\', '/', $_POST['filename'])) : '';
         if ($name === '' || strlen($name) > 255 || !in_array(strtolower(pathinfo($name, PATHINFO_EXTENSION)), array('mp4', 'webm', 'ogv'))) {
-          throw new Exception('Use an MP4, WebM or Ogg file with a filename up to 255 bytes.');
+          throw new Exception(lang('LANG_USE_AN_MP4_WEBM_OR_OGG_FILE_WITH_A_FILENAME_UP_TO_255_BYTES'));
         }
         // One staged upload per session; restarting also removes an abandoned upload.
         if (isset($_SESSION['_video_upload'])) { @unlink($_SESSION['_video_upload']['path']); }
         $path = tempnam(sys_get_temp_dir(), 'playlist-video-');
-        if ($path === false) { throw new Exception('Cannot create upload temporary file.'); }
+        if ($path === false) { throw new Exception(lang('LANG_CANNOT_CREATE_UPLOAD_TEMPORARY_FILE')); }
         @chmod($path, 0600);
         $token = bin2hex(auth_random_bytes(32));
         $_SESSION['_video_upload'] = array('token' => $token, 'path' => $path,
@@ -51,7 +51,7 @@ class Playlist extends App
       }
       $upload = $this->stagedUpload($token);
       $hash = @hash_file('sha256', $chunk['tmp_name']);
-      if ($hash === false) { throw new Exception('Cannot read chunk temporary file.'); }
+      if ($hash === false) { throw new Exception(lang('LANG_CANNOT_READ_CHUNK_TEMPORARY_FILE')); }
       // A response may be lost after the chunk was saved. A verified replay is safe.
       if ($upload['size'] === $total && $upload['received'] === $offset + (int) $chunk['size']
         && isset($upload['last_offset'], $upload['last_hash']) && $upload['last_offset'] === $offset
@@ -60,23 +60,23 @@ class Playlist extends App
         exit;
       }
       if ($upload['size'] !== $total || $upload['received'] !== $offset) {
-        throw new Exception('Unexpected chunk offset: server has ' . $upload['received'] . ' bytes, request starts at ' . $offset . '. Restart the upload.');
+        throw new Exception(lang('LANG_UNEXPECTED_CHUNK_OFFSET_SERVER_HAS') . $upload['received'] . lang('LANG_BYTES_REQUEST_STARTS_AT') . $offset . lang('LANG__RESTART_THE_UPLOAD'));
       }
       $input = @fopen($chunk['tmp_name'], 'rb');
       $output = @fopen($upload['path'], 'c+b');
       if (!$input || !$output) {
         if ($input) { fclose($input); }
         if ($output) { fclose($output); }
-        throw new Exception('Cannot open upload temporary file.');
+        throw new Exception(lang('LANG_CANNOT_OPEN_UPLOAD_TEMPORARY_FILE'));
       }
       if (!@ftruncate($output, $offset) || @fseek($output, $offset) !== 0) {
         fclose($input); fclose($output);
-        throw new Exception('Cannot seek upload temporary file.');
+        throw new Exception(lang('LANG_CANNOT_SEEK_UPLOAD_TEMPORARY_FILE'));
       }
       $written = @stream_copy_to_stream($input, $output);
       fclose($input);
       fclose($output);
-      if ($written !== (int) $chunk['size']) { throw new Exception('Cannot write upload: check temporary disk space.'); }
+      if ($written !== (int) $chunk['size']) { throw new Exception(lang('LANG_CANNOT_WRITE_UPLOAD_CHECK_TEMPORARY_DISK_SPACE')); }
       $_SESSION['_video_upload']['received'] += $written;
       $_SESSION['_video_upload']['last_offset'] = $offset;
       $_SESSION['_video_upload']['last_hash'] = $hash;
@@ -91,11 +91,11 @@ class Playlist extends App
 
   private function stagedUpload($token)
   {
-    if (!isset($_SESSION['_video_upload'])) { throw new Exception('Upload expired. Select the file again.'); }
+    if (!isset($_SESSION['_video_upload'])) { throw new Exception(lang('LANG_UPLOAD_EXPIRED_SELECT_THE_FILE_AGAIN')); }
     $upload = $_SESSION['_video_upload'];
     if (!is_string($token) || !auth_hash_equals($upload['token'], $token)
       || $upload['user'] !== auth_user_id() || time() - $upload['time'] > 86400 || !is_file($upload['path'])) {
-      throw new Exception('Upload expired. Select the file again.');
+      throw new Exception(lang('LANG_UPLOAD_EXPIRED_SELECT_THE_FILE_AGAIN'));
     }
     return $upload;
   }
@@ -104,13 +104,13 @@ class Playlist extends App
   {
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $head = file_get_contents($file['tmp_name'], false, null, 0, 65536);
-    if ($head === false) { throw new Exception('Cannot read uploaded video.'); }
+    if ($head === false) { throw new Exception(lang('LANG_CANNOT_READ_UPLOADED_VIDEO')); }
     $mime = $this->videoMime($head);
     $allowed = array('mp4' => 'video/mp4', 'webm' => 'video/webm', 'ogv' => 'video/ogg');
     if (!isset($allowed[$extension]) || $allowed[$extension] !== $mime) {
       $finfo = new finfo(FILEINFO_MIME_TYPE);
-      throw new Exception('Video format could not be recognized (detected: ' . $finfo->buffer($head)
-        . '). Expected MP4, WebM or Ogg.');
+      throw new Exception(lang('LANG_VIDEO_FORMAT_COULD_NOT_BE_RECOGNIZED_DETECTED') . $finfo->buffer($head)
+        . lang('LANG__EXPECTED_MP4_WEBM_OR_OGG'));
     }
   }
 
@@ -159,7 +159,7 @@ class Playlist extends App
   private function notFound()
   {
     header('HTTP/1.1 404 Not Found');
-    die('Video not found.');
+    die(lang('LANG_VIDEO_NOT_FOUND'));
   }
 
   private function metadata($id)
@@ -187,7 +187,7 @@ class Playlist extends App
   public function add()
   {
     $upload = isset($_GET['upload']);
-    $this->set(array('title' => $upload ? 'Upload video' : 'Add video',
+    $this->set(array('title' => $upload ? lang('LANG_UPLOAD_VIDEO') : lang('LANG_ADD_VIDEO'),
       'upload' => $upload, 'hidden_default' => !empty($_SESSION['_playlist_hidden_unlocked'])));
     $this->render('playlist/add');
   }
@@ -195,7 +195,7 @@ class Playlist extends App
   public function edit()
   {
     $video = $this->metadata(isset($_GET['id']) ? (int) $_GET['id'] : 0);
-    $this->set(array('title' => 'Edit video', 'video' => $video));
+    $this->set(array('title' => lang('LANG_EDIT_VIDEO'), 'video' => $video));
     $this->render('playlist/edit');
   }
 
@@ -204,17 +204,17 @@ class Playlist extends App
     if (!isset($_FILES[$name]) || $_FILES[$name]['error'] === UPLOAD_ERR_NO_FILE) { return null; }
     $file = $_FILES[$name];
     if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
-      throw new Exception('Upload failed for ' . $name . '. Check server upload limits.');
+      throw new Exception(lang('LANG_UPLOAD_FAILED_FOR') . $name . lang('LANG__CHECK_SERVER_UPLOAD_LIMITS'));
     }
     if ($file['size'] <= 0 || $file['size'] > ($video ? 734003200 : 10485760)) {
-      throw new Exception($video ? 'Video must be at most 700 MiB.' : 'Each image must be at most 10 MiB.');
+      throw new Exception($video ? lang('LANG_VIDEO_MUST_BE_AT_MOST_700_MIB') : lang('LANG_EACH_IMAGE_MUST_BE_AT_MOST_10_MIB'));
     }
     if ($video) {
       $this->validateVideo($file);
     } else {
       $info = @getimagesize($file['tmp_name']);
       if (!$info || !in_array($info[2], array(IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF, 18))) {
-        throw new Exception('Images must be JPEG, PNG, GIF or WebP.');
+        throw new Exception(lang('LANG_IMAGES_MUST_BE_JPEG_PNG_GIF_OR_WEBP'));
       }
     }
     return $file;
@@ -228,7 +228,7 @@ class Playlist extends App
     $this->requireLogin();
     if (empty($_POST) && !empty($_SERVER['CONTENT_LENGTH'])) {
       header('HTTP/1.1 413 Payload Too Large');
-      die('Upload exceeds the server post_max_size limit.');
+      die(lang('LANG_UPLOAD_EXCEEDS_THE_SERVER_POST_MAX_SIZE_LIMIT'));
     }
     $this->requireCsrf();
     $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
@@ -243,36 +243,36 @@ class Playlist extends App
     $user = auth_user_id();
     $transaction = false;
     try {
-      if ($title === '' || (!$upload && $url === '')) { throw new Exception('Title and iframe URL (for embedded videos) are required.'); }
+      if ($title === '' || (!$upload && $url === '')) { throw new Exception(lang('LANG_TITLE_AND_IFRAME_URL_FOR_EMBEDDED_VIDEOS_ARE_REQUIRED')); }
       if (strlen($title) > 255 || strlen($url) > 2048 || strlen($uri) > 255 || strlen($note) > 65535) {
-        throw new Exception('One or more fields are too long.');
+        throw new Exception(lang('LANG_ONE_OR_MORE_FIELDS_ARE_TOO_LONG'));
       }
       $staged = null;
       $file = null;
       if (!$editing && $upload && !empty($_POST['upload_token'])) {
         $staged = $this->stagedUpload($_POST['upload_token']);
         if ($staged['received'] !== $staged['size'] || filesize($staged['path']) !== $staged['size']) {
-          throw new Exception('Video upload is incomplete.');
+          throw new Exception(lang('LANG_VIDEO_UPLOAD_IS_INCOMPLETE'));
         }
         $file = array('name' => $staged['filename'], 'tmp_name' => $staged['path'], 'size' => $staged['size']);
         $this->validateVideo($file);
       } elseif (!$editing && $upload) {
         $file = $this->uploadedFile('video_file', true);
       }
-      if (!$editing && $upload && !$file) { throw new Exception('Select a video file.'); }
+      if (!$editing && $upload && !$file) { throw new Exception(lang('LANG_SELECT_A_VIDEO_FILE')); }
       $images = array();
       foreach ($this->imageColumns() as $column) { $images[$column] = $this->uploadedFile($column); }
       $this->db->autocommit(false);
       $transaction = true;
       if ($editing) {
         $filename = $upload ? (isset($_POST['filename']) ? trim($_POST['filename']) : $existing['filename']) : null;
-        if ($upload && ($filename === '' || strlen($filename) > 255)) { throw new Exception('Filename is required and must be at most 255 bytes.'); }
+        if ($upload && ($filename === '' || strlen($filename) > 255)) { throw new Exception(lang('LANG_FILENAME_IS_REQUIRED_AND_MUST_BE_AT_MOST_255_BYTES')); }
         $stmt = $this->db->prepare('UPDATE ' . $this->table('playlist')
           . ' SET url=?, uri=?, title=?, hidden=?, note=?, filename=? WHERE id=? AND user_id=?');
         $stmt->bind_param('sssissii', $url, $uri, $title, $hidden, $note, $filename, $id, $user);
       } else {
         $filename = $file ? basename(str_replace('\\', '/', $file['name'])) : null;
-        if ($filename !== null && strlen($filename) > 255) { throw new Exception('Filename is too long.'); }
+        if ($filename !== null && strlen($filename) > 255) { throw new Exception(lang('LANG_FILENAME_IS_TOO_LONG')); }
         $stmt = $this->db->prepare('INSERT INTO ' . $this->table('playlist')
           . ' (user_id,url,uri,title,hidden,note,filename) VALUES (?,?,?,?,?,?,?)');
         $stmt->bind_param('isssiss', $user, $url, $uri, $title, $hidden, $note, $filename);
@@ -304,10 +304,10 @@ class Playlist extends App
     } catch (Exception $e) {
       if ($transaction) { $this->db->rollback(); $this->db->autocommit(true); }
       error_log($e->getMessage());
-      $this->flash('error', $e instanceof mysqli_sql_exception ? 'Database save failed. Check server limits and logs.' : $e->getMessage());
+      $this->flash('error', $e instanceof mysqli_sql_exception ? lang('LANG_DATABASE_SAVE_FAILED_CHECK_SERVER_LIMITS_AND_LOGS') : $e->getMessage());
       $this->redirect($back);
     }
-    $this->flash('success', $editing ? 'Video updated.' : 'Video added.');
+    $this->flash('success', $editing ? lang('LANG_VIDEO_UPDATED') : lang('LANG_VIDEO_ADDED'));
     $mode = !empty($_SESSION['_playlist_hidden_unlocked']);
     $this->redirect($mode === (bool) $hidden ? '/?video=' . $id : '/');
   }
@@ -318,13 +318,13 @@ class Playlist extends App
     $blob = null;
     $stmt->bind_param('bi', $blob, $id);
     $handle = fopen($path, 'rb');
-    if (!$handle) { throw new Exception('Cannot read uploaded file.'); }
-    if (fseek($handle, $offset) !== 0) { fclose($handle); throw new Exception('Cannot seek uploaded file.'); }
+    if (!$handle) { throw new Exception(lang('LANG_CANNOT_READ_UPLOADED_FILE')); }
+    if (fseek($handle, $offset) !== 0) { fclose($handle); throw new Exception(lang('LANG_CANNOT_SEEK_UPLOADED_FILE')); }
     $remaining = $length === null ? filesize($path) : $length;
     while ($remaining > 0) {
       $chunk = fread($handle, min(1048576, $remaining));
-      if ($chunk === false) { fclose($handle); throw new Exception('Cannot read uploaded file.'); }
-      if ($chunk === '') { fclose($handle); throw new Exception('Unexpected end of uploaded file.'); }
+      if ($chunk === false) { fclose($handle); throw new Exception(lang('LANG_CANNOT_READ_UPLOADED_FILE')); }
+      if ($chunk === '') { fclose($handle); throw new Exception(lang('LANG_UNEXPECTED_END_OF_UPLOADED_FILE')); }
       $stmt->send_long_data(0, $chunk);
       $remaining -= strlen($chunk);
     }
@@ -420,7 +420,7 @@ class Playlist extends App
     $stmt->execute();
     $deleted = $stmt->affected_rows > 0;
     $stmt->close();
-    $this->flash($deleted ? 'success' : 'error', $deleted ? 'Video deleted.' : 'Video not found.');
+    $this->flash($deleted ? 'success' : 'error', $deleted ? lang('LANG_VIDEO_DELETED') : lang('LANG_VIDEO_NOT_FOUND'));
     $this->redirect('/');
   }
 }

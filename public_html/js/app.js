@@ -21,14 +21,14 @@ var App = {
     });
 
     $('#playlist-hidden-unlock-button').on('click', function () {
-      var password = window.prompt('Hidden password:');
+      var password = window.prompt(window.AppLang.LANG_HIDDEN_PASSWORD_TEXT);
 
       if (password === null) {
         return;
       }
 
       if (password === '') {
-        window.alert('Hidden password is required.');
+        window.alert(window.AppLang.LANG_HIDDEN_PASSWORD_IS_REQUIRED);
         return;
       }
 
@@ -44,7 +44,7 @@ var App = {
     var status = form.querySelector('[data-upload-status]');
     var progress = form.querySelector('[data-upload-progress]');
     if (!file || file.size <= 0 || file.size > 734003200) {
-      status.textContent = 'Select a video up to 700 MiB.';
+      status.textContent = window.AppLang.LANG_SELECT_A_VIDEO_UP_TO_700_MIB;
       return;
     }
     if (!window.confirm(form.getAttribute('data-confirm'))) { return; }
@@ -69,9 +69,9 @@ var App = {
         data.append('total', String(file.size));
         data.append('filename', file.name);
         data.append('chunk', file.slice(offset, end), 'chunk.bin');
-        status.textContent = 'Uploading video: ' + Math.floor(offset * 100 / file.size) + '%';
+        status.textContent = window.AppLang.LANG_UPLOADING_VIDEO + Math.floor(offset * 100 / file.size) + '%';
         var result = await App.sendVideoChunk(form.getAttribute('data-video-upload'), data);
-        if (!result.token || result.received !== end) { throw new Error(result.error || 'Unexpected upload response.'); }
+        if (!result.token || result.received !== end) { throw new Error(result.error || window.AppLang.LANG_UNEXPECTED_UPLOAD_RESPONSE); }
         token = result.token;
         offset = end;
         progress.value = offset * 100 / file.size;
@@ -79,11 +79,11 @@ var App = {
       form.querySelector('[name="upload_token"]').value = token;
       // Only the staged token and images enter the final request, never the full video.
       input.disabled = true;
-      status.textContent = 'Upload complete. Saving video to the database; please wait…';
+      status.textContent = window.AppLang.LANG_UPLOAD_COMPLETE_SAVING_VIDEO_TO_THE_DATABASE_PLEASE_WAIT;
       window.removeEventListener('beforeunload', warn);
       HTMLFormElement.prototype.submit.call(form);
     } catch (error) {
-      status.textContent = error.message || 'Upload failed. Please try again.';
+      status.textContent = error.message || window.AppLang.LANG_UPLOAD_FAILED_PLEASE_TRY_AGAIN;
       input.disabled = false;
       button.disabled = false;
       form.uploading = false;
@@ -96,7 +96,7 @@ var App = {
       try {
         var response = await fetch(url, { method: 'POST', body: data, credentials: 'same-origin' });
       } catch (error) {
-        if (attempt === 2) { throw new Error('Chunk transfer failed after 3 attempts. Check your connection.'); }
+        if (attempt === 2) { throw new Error(window.AppLang.LANG_CHUNK_TRANSFER_FAILED_AFTER_3_ATTEMPTS_CHECK_YOUR_CONNECTION); }
         await new Promise(function (resolve) { setTimeout(resolve, 1000); });
         continue;
       }
@@ -107,10 +107,10 @@ var App = {
       var result;
       try { result = await response.json(); }
       catch (error) {
-        throw new Error('Chunk rejected (HTTP ' + response.status + '). No JSON response; check Network → Response or reload if your login expired.');
+        throw new Error(window.AppLang.LANG_CHUNK_REJECTED_HTTP + response.status + window.AppLang.LANG__NO_JSON_RESPONSE_CHECK_NETWORK_RESPONSE_OR_RELOAD_IF_YOUR_LOGIN_EXPIRED);
       }
       if (!response.ok || result.error) {
-        throw new Error('Chunk failed (HTTP ' + response.status + '): ' + (result.error || 'Server rejected the request.'));
+        throw new Error(window.AppLang.LANG_CHUNK_FAILED_HTTP + response.status + '): ' + (result.error || window.AppLang.LANG_SERVER_REJECTED_THE_REQUEST));
       }
       return result;
     }

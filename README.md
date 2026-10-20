@@ -41,6 +41,12 @@ Playlist manages per-user collections of embedded and uploaded videos, with a st
 
 Application configuration: `private_html/app/config/app.php` (`APP_URL` is optional).
 
+Set `APP_LANG` to `hu` (Hungarian) or `en` (English). Translations for the interface,
+messages and JavaScript are in `private_html/app/config/lang_hu.php` and
+`private_html/app/config/lang_en.php`, using PHP 5.3 compatible scalar constants
+such as `LANG_HU_WEEK` and `LANG_EN_WEEK`. The helper in `c/lang.php` selects
+the language: use `lang('LANG_LOGIN')`, with English as the fallback.
+
 Database configuration: `private_html/app/config/db.php` (`DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME`, `DB_CHAR`, `DB_TIME`, `DB_PREFIX`).
 
 Embedded video sources are formed by concatenating `URL + URI`, for example `https://www.youtube.com/embed/` and `VIDEO_ID`.

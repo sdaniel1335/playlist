@@ -4,21 +4,21 @@
       <div class="d-flex align-items-center gap-2 mb-2 px-2 px-md-3">
         <div class="min-w-0 flex-grow-1">
           <div class="small text-body-secondary">
-            <?php echo $hidden_mode ? 'Hidden playlist' : 'Playlist'; ?>
+            <?php echo $hidden_mode ? lang('LANG_HIDDEN_PLAYLIST') : lang('LANG_PLAYLIST'); ?>
           </div>
           <div class="fw-semibold text-truncate">
             <?php if ($current_video !== null) { ?>
               <?php echo htmlspecialchars($current_video['title'], ENT_QUOTES, 'UTF-8'); ?>
             <?php } else { ?>
-              No videos
+              <?php echo htmlspecialchars(lang('LANG_NO_VIDEOS'), ENT_QUOTES, 'UTF-8'); ?>
             <?php } ?>
           </div>
         </div>
 
         <?php if ($hidden_mode) { ?>
-          <form method="post" action="<?php echo url('/hidden-lock'); ?>" class="m-0" data-confirm="Lock hidden videos and return to the public playlist?">
+          <form method="post" action="<?php echo url('/hidden-lock'); ?>" class="m-0" data-confirm="<?php echo htmlspecialchars(lang('LANG_LOCK_HIDDEN_VIDEOS_AND_RETURN_TO_THE_PUBLIC_PLAYLIST'), ENT_QUOTES, 'UTF-8'); ?>">
             <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(auth_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="btn btn-outline-secondary btn-sm" title="Lock hidden videos" aria-label="Lock hidden videos">
+            <button type="submit" class="btn btn-outline-secondary btn-sm" title="<?php echo htmlspecialchars(lang('LANG_LOCK_HIDDEN_VIDEOS'), ENT_QUOTES, 'UTF-8'); ?>" aria-label="<?php echo htmlspecialchars(lang('LANG_LOCK_HIDDEN_VIDEOS'), ENT_QUOTES, 'UTF-8'); ?>">
               <i class="bi bi-unlock-fill" aria-hidden="true"></i>
             </button>
           </form>
@@ -27,8 +27,8 @@
             type="button"
             class="btn btn-outline-secondary btn-sm"
             id="playlist-hidden-unlock-button"
-            title="Unlock hidden videos"
-            aria-label="Unlock hidden videos"
+            title="<?php echo htmlspecialchars(lang('LANG_UNLOCK_HIDDEN_VIDEOS'), ENT_QUOTES, 'UTF-8'); ?>"
+            aria-label="<?php echo htmlspecialchars(lang('LANG_UNLOCK_HIDDEN_VIDEOS'), ENT_QUOTES, 'UTF-8'); ?>"
           >
             <i class="bi bi-lock-fill" aria-hidden="true"></i>
           </button>
@@ -56,7 +56,7 @@
         </div>
       <?php } else { ?>
         <div class="playlist-empty-player border rounded p-4 text-center text-body-secondary">
-          <?php echo $hidden_mode ? 'No hidden videos.' : 'No public videos.'; ?>
+          <?php echo $hidden_mode ? lang('LANG_NO_HIDDEN_VIDEOS') : lang('LANG_NO_PUBLIC_VIDEOS'); ?>
         </div>
       <?php } ?>
     </div>
@@ -65,23 +65,23 @@
   <section class="container py-3 py-md-4">
     <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
       <h1 class="h4 mb-0">
-        <?php echo $hidden_mode ? 'Hidden videos' : 'Videos'; ?>
+        <?php echo $hidden_mode ? lang('LANG_HIDDEN_VIDEOS') : lang('LANG_VIDEOS'); ?>
       </h1>
       <div class="d-flex align-items-center gap-2">
         <span class="badge text-bg-secondary">
           <?php echo count($videos); ?>
         </span>
-        <a href="<?php echo url('/video/add') . '?upload=1'; ?>" class="btn btn-primary btn-sm" title="Upload video" aria-label="Upload video">
-          <i class="bi bi-upload" aria-hidden="true"></i><span class="d-none d-sm-inline ms-1">Upload video</span>
+        <a href="<?php echo url('/video/add') . '?upload=1'; ?>" class="btn btn-primary btn-sm" title="<?php echo htmlspecialchars(lang('LANG_UPLOAD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>" aria-label="<?php echo htmlspecialchars(lang('LANG_UPLOAD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>">
+          <i class="bi bi-upload" aria-hidden="true"></i><span class="d-none d-sm-inline ms-1"><?php echo htmlspecialchars(lang('LANG_UPLOAD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?></span>
         </a>
         <a
           href="<?php echo url('/video/add'); ?>"
           class="btn btn-primary btn-sm"
-          title="Add video"
-          aria-label="Add video"
+          title="<?php echo htmlspecialchars(lang('LANG_ADD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>"
+          aria-label="<?php echo htmlspecialchars(lang('LANG_ADD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>"
         >
           <i class="bi bi-plus-lg" aria-hidden="true"></i>
-          <span class="d-none d-sm-inline ms-1">Add video</span>
+          <span class="d-none d-sm-inline ms-1"><?php echo htmlspecialchars(lang('LANG_ADD_VIDEO'), ENT_QUOTES, 'UTF-8'); ?></span>
         </a>
       </div>
     </div>
@@ -108,36 +108,36 @@
 
               <div class="d-flex gap-2 flex-shrink-0">
                 <?php if ($video['filename'] !== null) { ?>
-                  <span class="align-self-center" title="Uploaded video" aria-label="Uploaded video"><i class="bi bi-file-earmark-play" aria-hidden="true"></i></span>
+                  <span class="align-self-center" title="<?php echo htmlspecialchars(lang('LANG_UPLOADED_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>" aria-label="<?php echo htmlspecialchars(lang('LANG_UPLOADED_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-file-earmark-play" aria-hidden="true"></i></span>
                 <?php } ?>
                 <?php if ($video['has_cover']) { ?>
-                  <span class="playlist-cover-icon align-self-center" tabindex="0" aria-label="Cover preview">
+                  <span class="playlist-cover-icon align-self-center" tabindex="0" aria-label="<?php echo htmlspecialchars(lang('LANG_COVER_PREVIEW'), ENT_QUOTES, 'UTF-8'); ?>">
                     <i class="bi bi-image" aria-hidden="true"></i>
-                    <img class="playlist-cover-preview" loading="lazy" src="<?php echo url('/video/media') . '?id=' . (int) $video['id'] . '&amp;image=cover'; ?>" alt="Cover preview">
+                    <img class="playlist-cover-preview" loading="lazy" src="<?php echo url('/video/media') . '?id=' . (int) $video['id'] . '&amp;image=cover'; ?>" alt="<?php echo htmlspecialchars(lang('LANG_COVER_PREVIEW'), ENT_QUOTES, 'UTF-8'); ?>">
                   </span>
                 <?php } ?>
                 <?php if ($video['image_count'] > 0) { ?>
-                  <span class="align-self-center" tabindex="0" title="<?php echo $video['image_count']; ?> images" aria-label="<?php echo $video['image_count']; ?> images"><i class="bi bi-images" aria-hidden="true"></i></span>
+                  <span class="align-self-center" tabindex="0" title="<?php echo $video['image_count']; ?> <?php echo lang('LANG_IMAGES'); ?>" aria-label="<?php echo $video['image_count']; ?> <?php echo lang('LANG_IMAGES'); ?>"><i class="bi bi-images" aria-hidden="true"></i></span>
                 <?php } ?>
                 <a
                   href="<?php echo url('/video/edit') . '?id=' . (int) $video['id']; ?>"
                   class="btn btn-sm <?php echo $active ? 'btn-light' : 'btn-outline-secondary'; ?>"
                 >
                   <i class="bi bi-pencil" aria-hidden="true"></i>
-                  <span class="visually-hidden">Edit</span>
+                  <span class="visually-hidden"><?php echo htmlspecialchars(lang('LANG_EDIT'), ENT_QUOTES, 'UTF-8'); ?></span>
                 </a>
 
                 <form
                   method="post"
                   action="<?php echo url('/video/delete'); ?>"
                   class="m-0"
-                  data-confirm="Delete this video?"
+                  data-confirm="<?php echo htmlspecialchars(lang('LANG_DELETE_THIS_VIDEO'), ENT_QUOTES, 'UTF-8'); ?>"
                 >
                   <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(auth_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
                   <input type="hidden" name="id" value="<?php echo (int) $video['id']; ?>">
                   <button type="submit" class="btn btn-sm <?php echo $active ? 'btn-light' : 'btn-outline-danger'; ?>">
                     <i class="bi bi-trash" aria-hidden="true"></i>
-                    <span class="visually-hidden">Delete</span>
+                    <span class="visually-hidden"><?php echo htmlspecialchars(lang('LANG_DELETE'), ENT_QUOTES, 'UTF-8'); ?></span>
                   </button>
                 </form>
               </div>
@@ -147,7 +147,7 @@
       </div>
     <?php } else { ?>
       <div class="alert alert-secondary mb-0">
-        <?php echo $hidden_mode ? 'There are no hidden videos.' : 'There are no public videos.'; ?>
+        <?php echo $hidden_mode ? lang('LANG_THERE_ARE_NO_HIDDEN_VIDEOS') : lang('LANG_THERE_ARE_NO_PUBLIC_VIDEOS'); ?>
       </div>
     <?php } ?>
   </section>

@@ -122,7 +122,7 @@ class Pages extends App
       : '';
 
     if ($password === '') {
-      $this->flash('error', 'Hidden password is required.');
+      $this->flash('error', lang('LANG_HIDDEN_PASSWORD_IS_REQUIRED'));
       $this->redirect('/');
     }
 
@@ -141,19 +141,19 @@ class Pages extends App
     $stmt->close();
 
     if (! $found) {
-      $this->flash('error', 'Set a hidden password first.');
+      $this->flash('error', lang('LANG_SET_A_HIDDEN_PASSWORD_FIRST'));
       $this->redirect('/');
     }
 
     if (! auth_password_check($password, $password_hash)) {
-      $this->flash('error', 'Invalid hidden password.');
+      $this->flash('error', lang('LANG_INVALID_HIDDEN_PASSWORD'));
       $this->redirect('/');
     }
 
     $_SESSION['_playlist_hidden_unlocked'] = true;
     session_regenerate_id(true);
 
-    $this->flash('success', 'Hidden videos unlocked.');
+    $this->flash('success', lang('LANG_HIDDEN_VIDEOS_UNLOCKED'));
     $this->redirect('/');
   }
 
@@ -165,7 +165,7 @@ class Pages extends App
     unset($_SESSION['_playlist_hidden_unlocked']);
     session_regenerate_id(true);
 
-    $this->flash('success', 'Hidden videos locked.');
+    $this->flash('success', lang('LANG_HIDDEN_VIDEOS_LOCKED'));
     $this->redirect('/');
   }
 }

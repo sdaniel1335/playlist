@@ -13,7 +13,7 @@ class Auth extends App
       $this->redirect('/');
     }
 
-    $this->set('title', 'Login');
+    $this->set('title', lang('LANG_LOGIN'));
     $this->render('auth/login');
   }
 
@@ -34,7 +34,7 @@ class Auth extends App
       : '';
 
     if ($username === '' || $password === '') {
-      $this->flash('error', 'Username and password are required.');
+      $this->flash('error', lang('LANG_USERNAME_AND_PASSWORD_ARE_REQUIRED'));
       $this->redirect('/login');
     }
 
@@ -57,7 +57,7 @@ class Auth extends App
     $stmt->close();
 
     if (!$valid) {
-      $this->flash('error', 'Invalid username or password.');
+      $this->flash('error', lang('LANG_INVALID_USERNAME_OR_PASSWORD'));
       $this->redirect('/login');
     }
 
@@ -66,7 +66,7 @@ class Auth extends App
     $_SESSION['auth_user_id'] = (int) $id;
     $_SESSION['auth_username'] = $db_username;
 
-    $this->flash('success', 'Logged in.');
+    $this->flash('success', lang('LANG_LOGGED_IN'));
     $this->redirect('/');
   }
 
@@ -84,7 +84,7 @@ class Auth extends App
 
     session_regenerate_id(true);
 
-    $this->flash('success', 'Logged out.');
+    $this->flash('success', lang('LANG_LOGGED_OUT'));
     $this->redirect('/login');
   }
 
@@ -92,7 +92,7 @@ class Auth extends App
   {
     $this->requireLogin();
 
-    $this->set('title', 'Change password');
+    $this->set('title', lang('LANG_CHANGE_PASSWORD'));
     $this->render('auth/password');
   }
 
@@ -118,17 +118,17 @@ class Auth extends App
       || $new_password === ''
       || $new_password_confirm === ''
     ) {
-      $this->flash('error', 'All password fields are required.');
+      $this->flash('error', lang('LANG_ALL_PASSWORD_FIELDS_ARE_REQUIRED'));
       $this->redirect('/password');
     }
 
     if (strlen($new_password) < 8) {
-      $this->flash('error', 'The new password must be at least 8 characters.');
+      $this->flash('error', lang('LANG_THE_NEW_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS'));
       $this->redirect('/password');
     }
 
     if ($new_password !== $new_password_confirm) {
-      $this->flash('error', 'The new passwords do not match.');
+      $this->flash('error', lang('LANG_THE_NEW_PASSWORDS_DO_NOT_MATCH'));
       $this->redirect('/password');
     }
 
@@ -148,7 +148,7 @@ class Auth extends App
     $stmt->close();
 
     if (!$found || !auth_password_check($current_password, $password_hash)) {
-      $this->flash('error', 'Current password is incorrect.');
+      $this->flash('error', lang('LANG_CURRENT_PASSWORD_IS_INCORRECT'));
       $this->redirect('/password');
     }
 
@@ -166,7 +166,7 @@ class Auth extends App
 
     session_regenerate_id(true);
 
-    $this->flash('success', 'Password changed.');
+    $this->flash('success', lang('LANG_PASSWORD_CHANGED'));
     $this->redirect('/password');
   }
 }
