@@ -34,7 +34,7 @@ $escape = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTE
     <?php } else { ?>
       <div class="mb-3">
         <label for="url" class="form-label">Iframe URL</label>
-        <input type="text" class="form-control" id="url" name="url" maxlength="2048" value="<?php echo $editing ? $escape($video['url']) : ''; ?>" required>
+        <input type="text" class="form-control" id="url" name="url" maxlength="2048" value="<?php echo $editing ? $escape($video['url']) : 'https://www.youtube.com/embed/'; ?>" required>
       </div>
       <div class="mb-3">
         <label for="uri" class="form-label">URI</label>
