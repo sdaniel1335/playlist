@@ -15,6 +15,7 @@
           </div>
         </div>
 
+        <?php if (PLAYLIST_HIDDEN) { ?>
         <?php if ($hidden_mode) { ?>
           <form method="post" action="<?php echo url('/hidden-lock'); ?>" class="m-0" data-confirm="<?php echo htmlspecialchars(lang('LANG_LOCK_HIDDEN_VIDEOS_AND_RETURN_TO_THE_PUBLIC_PLAYLIST'), ENT_QUOTES, 'UTF-8'); ?>">
             <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(auth_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
@@ -37,6 +38,7 @@
             <input type="hidden" name="_csrf" value="<?php echo htmlspecialchars(auth_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
             <input type="hidden" name="hidden_password" id="playlist-hidden-password" value="">
           </form>
+        <?php } ?>
         <?php } ?>
       </div>
 

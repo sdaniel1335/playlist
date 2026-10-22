@@ -10,20 +10,23 @@ class Pages extends App
   public function index()
   {
     $user_id = auth_user_id();
-    $hidden_mode = isset($_SESSION['_playlist_hidden_unlocked'])
+    $hidden_mode = PLAYLIST_HIDDEN && isset($_SESSION['_playlist_hidden_unlocked'])
       && $_SESSION['_playlist_hidden_unlocked'] === true;
 
-    $stmt = $this->db->prepare(
-      'SELECT id FROM '
-      . $this->table('playlist_hidden')
-      . ' WHERE user_id = ? LIMIT 1'
-    );
+    $has_hidden_password = false;
+    if (PLAYLIST_HIDDEN) {
+      $stmt = $this->db->prepare(
+        'SELECT id FROM '
+        . $this->table('playlist_hidden')
+        . ' WHERE user_id = ? LIMIT 1'
+      );
 
-    $stmt->bind_param('i', $user_id);
-    $stmt->execute();
-    $stmt->bind_result($hidden_password_id);
-    $has_hidden_password = $stmt->fetch();
-    $stmt->close();
+      $stmt->bind_param('i', $user_id);
+      $stmt->execute();
+      $stmt->bind_result($hidden_password_id);
+      $has_hidden_password = $stmt->fetch();
+      $stmt->close();
+    }
 
     if ($hidden_mode && ! $has_hidden_password) {
       unset($_SESSION['_playlist_hidden_unlocked']);

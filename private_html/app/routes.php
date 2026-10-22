@@ -1,6 +1,6 @@
 <?php
 
-return array(
+$routes = array(
   'GET' => array(
     '/' => array(
       'controller' => 'pages',
@@ -83,4 +83,11 @@ return array(
     )
   )
 );
+
+if (!PLAYLIST_HIDDEN) {
+  unset($routes['GET']['/hidden-password'], $routes['POST']['/hidden-password'],
+    $routes['POST']['/hidden-unlock'], $routes['POST']['/hidden-lock']);
+}
+
+return $routes;
 

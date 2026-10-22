@@ -8,7 +8,9 @@
       <?php echo htmlspecialchars(auth_username(), ENT_QUOTES, 'UTF-8'); ?>
     </span>
 
+    <?php if (PLAYLIST_HIDDEN) { ?>
     <a href="<?php echo url('/hidden-password'); ?>"><?php echo htmlspecialchars(lang('LANG_HIDDEN_PASSWORD'), ENT_QUOTES, 'UTF-8'); ?></a>
+    <?php } ?>
     <a href="<?php echo url('/password'); ?>"><?php echo htmlspecialchars(lang('LANG_CHANGE_PASSWORD'), ENT_QUOTES, 'UTF-8'); ?></a>
 
     <form method="post" action="<?php echo url('/logout'); ?>" class="m-0">

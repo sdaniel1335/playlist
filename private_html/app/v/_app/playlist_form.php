@@ -59,10 +59,12 @@ $escape = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTE
       </div>
     <?php } ?>
     <div class="form-text mb-3"><?php echo htmlspecialchars(lang('LANG_JPEG_PNG_GIF_OR_WEBP_UP_TO_10_MIB_EACH_A_NEW_IMAGE_REPLACES_THE_EXISTING_ONE'), ENT_QUOTES, 'UTF-8'); ?></div>
+    <?php if (PLAYLIST_HIDDEN) { ?>
     <div class="form-check mb-4">
       <input class="form-check-input" type="checkbox" value="1" id="hidden" name="hidden" <?php echo ($editing ? $video['hidden'] : $hidden_default) ? 'checked' : ''; ?>>
       <label class="form-check-label" for="hidden"><?php echo htmlspecialchars(lang('LANG_HIDDEN_VIDEO'), ENT_QUOTES, 'UTF-8'); ?></label>
     </div>
+    <?php } ?>
     <button type="submit" class="btn btn-primary"><?php echo $editing ? lang('LANG_SAVE_CHANGES') : ($is_upload ? lang('LANG_UPLOAD_VIDEO') : lang('LANG_ADD_VIDEO')); ?></button>
     <?php if (!$editing && $is_upload) { ?>
       <input type="hidden" name="upload_token" value="">

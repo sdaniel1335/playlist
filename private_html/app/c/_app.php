@@ -202,6 +202,10 @@ class App extends C
   {
     parent::__construct();
 
+    if (!PLAYLIST_HIDDEN) {
+      unset($_SESSION['_playlist_hidden_unlocked']);
+    }
+
     if (!$public && !auth_logged_in()) {
       $this->redirect('/login');
     }

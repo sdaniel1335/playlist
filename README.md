@@ -39,6 +39,11 @@ Playlist manages per-user collections of embedded and uploaded videos, with a st
 
 ## Configuration
 
+Hidden playlists: set `PLAYLIST_HIDDEN` in `private_html/app/config/playlist.php`
+to `true` (default) to enable them, or `false` to disable their controls, password
+settings and routes. Existing hidden videos remain stored and unavailable until
+the feature is enabled again; ordinary videos remain accessible.
+
 Application configuration: `private_html/app/config/app.php` (`APP_URL` is optional).
 
 Set `APP_LANG` to `hu` (Hungarian) or `en` (English). Translations for the interface,

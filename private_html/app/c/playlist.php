@@ -180,7 +180,7 @@ class Playlist extends App
     call_user_func_array(array($stmt, 'bind_result'), $refs);
     $found = $stmt->fetch();
     $stmt->close();
-    if (!$found) { $this->notFound(); }
+    if (!$found || (!PLAYLIST_HIDDEN && $row['hidden'])) { $this->notFound(); }
     return $row;
   }
 
@@ -188,7 +188,7 @@ class Playlist extends App
   {
     $upload = isset($_GET['upload']);
     $this->set(array('title' => $upload ? lang('LANG_UPLOAD_VIDEO') : lang('LANG_ADD_VIDEO'),
-      'upload' => $upload, 'hidden_default' => !empty($_SESSION['_playlist_hidden_unlocked'])));
+      'upload' => $upload, 'hidden_default' => PLAYLIST_HIDDEN && !empty($_SESSION['_playlist_hidden_unlocked'])));
     $this->render('playlist/add');
   }
 
@@ -239,7 +239,7 @@ class Playlist extends App
     $url = $upload ? '' : (isset($_POST['url']) ? trim($_POST['url']) : '');
     $uri = $upload ? '' : (isset($_POST['uri']) ? trim($_POST['uri']) : '');
     $note = isset($_POST['note']) ? $_POST['note'] : '';
-    $hidden = isset($_POST['hidden']) ? 1 : 0;
+    $hidden = PLAYLIST_HIDDEN && isset($_POST['hidden']) ? 1 : 0;
     $user = auth_user_id();
     $transaction = false;
     try {
@@ -415,7 +415,8 @@ class Playlist extends App
     $this->requireCsrf();
     $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
     $user = auth_user_id();
-    $stmt = $this->db->prepare('DELETE FROM ' . $this->table('playlist') . ' WHERE id=? AND user_id=?');
+    $stmt = $this->db->prepare('DELETE FROM ' . $this->table('playlist') . ' WHERE id=? AND user_id=?'
+      . (PLAYLIST_HIDDEN ? '' : ' AND hidden=0'));
     $stmt->bind_param('ii', $id, $user);
     $stmt->execute();
     $deleted = $stmt->affected_rows > 0;
