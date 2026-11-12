@@ -207,6 +207,18 @@ class App extends C
     }
 
     if (!$public && !auth_logged_in()) {
+      // Keep the requested playlist video even when the old session expired.
+      $path = isset($_SERVER['REQUEST_URI'])
+        ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
+        : '';
+      if (
+        isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET'
+        && rtrim($path, '/') === rtrim(BASE_URL, '/')
+        && isset($_GET['video']) && is_string($_GET['video'])
+        && ctype_digit($_GET['video']) && (int) $_GET['video'] > 0
+      ) {
+        $_SESSION['_auth_pending_video'] = (int) $_GET['video'];
+      }
       $this->redirect('/login');
     }
   }

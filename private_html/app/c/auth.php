@@ -67,7 +67,11 @@ class Auth extends App
     $_SESSION['auth_username'] = $db_username;
 
     $this->flash('success', lang('LANG_LOGGED_IN'));
-    $this->redirect('/');
+    $pending_video = isset($_SESSION['_auth_pending_video'])
+      ? (int) $_SESSION['_auth_pending_video']
+      : 0;
+    unset($_SESSION['_auth_pending_video']);
+    $this->redirect($pending_video > 0 ? '/?video=' . $pending_video : '/');
   }
 
   public function logout()

@@ -2,6 +2,24 @@ var App = {
   init: function () {
     if ($('body').hasClass('js')) {
       this.bindUIActions();
+      this.scrollToCurrentVideo();
+    }
+  },
+
+  scrollToCurrentVideo: function () {
+    var active = document.querySelector('.playlist-list .list-group-item.active');
+    var player = document.querySelector('.playlist-player-sticky');
+    if (!active || !player) { return; }
+
+    var scroll = function () {
+      // Leave the selected row visible below the sticky player.
+      var top = window.scrollY + active.getBoundingClientRect().top;
+      window.scrollTo({ top: Math.max(0, top - player.getBoundingClientRect().height - 12), behavior: 'instant' });
+    };
+    if (document.readyState === 'complete') {
+      scroll();
+    } else {
+      window.addEventListener('load', scroll, { once: true });
     }
   },
 
